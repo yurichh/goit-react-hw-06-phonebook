@@ -32,7 +32,7 @@ const ContactForm = ({ handleAddContact }) => {
   };
 
   return (
-    <form action="submit" className="add-form">
+    <form action="submit" className="add-form" autoComplete="on">
       <label htmlFor="name" className="add-label">
         Name
       </label>
