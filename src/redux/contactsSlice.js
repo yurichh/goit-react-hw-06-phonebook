@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-/* _________________________________________ Slice for contacts ____________________________________________*/
-
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: [],
