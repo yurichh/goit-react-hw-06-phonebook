@@ -9,7 +9,10 @@ import App from 'components/App';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate
+        loading={<span className="loader"></span>}
+        persistor={persistor}
+      >
         <App />
       </PersistGate>
     </Provider>
