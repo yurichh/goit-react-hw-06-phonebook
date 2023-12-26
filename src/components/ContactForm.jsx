@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../redux/slices';
+import { addContact } from '../redux/contactsSlice';
+import { selectContacts } from '../redux/selectors';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(selectContacts);
   const [state, setState] = useState({ name: '', number: '' });
 
   const checkNameForRepeat = contactName => {
@@ -41,8 +42,7 @@ const ContactForm = () => {
     }
 
     const newContactObj = {
-      name: state.name,
-      number: state.number,
+      ...state,
       id: nanoid(),
     };
 
