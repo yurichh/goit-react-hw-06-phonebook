@@ -6,7 +6,7 @@ import storage from 'redux-persist/lib/storage';
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: JSON.parse(localStorage.getItem('contacts')) || [],
+  initialState: [],
   reducers: {
     addContact(state, action) {
       state.push(action.payload);
@@ -32,23 +32,6 @@ const filterSlice = createSlice({
 });
 
 export const { changeFilter } = filterSlice.actions;
-
-/* _________________________________________ Slice for value ____________________________________________*/
-const valueSlice = createSlice({
-  name: 'value',
-  initialState: 100,
-  reducers: {
-    increment(state, action) {
-      return state + action.payload;
-    },
-    decrement(state, action) {
-      return state - action.payload;
-    },
-  },
-});
-
-export const { increment, decrement } = valueSlice.actions;
-
 /* _________________________________________ PERSIST ____________________________________________*/
 
 const persistConfig = {
@@ -67,7 +50,6 @@ export const store = configureStore({
   reducer: {
     contacts: persistedContactsReducer,
     filter: filterSlice.reducer,
-    value: valueSlice.reducer,
   },
   middleware: getDefaultMiddleware => [...getDefaultMiddleware(), logger],
 });
