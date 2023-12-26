@@ -1,24 +1,75 @@
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { logger } from 'redux-logger';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+/* _________________________________________ Slice for contacts ____________________________________________*/
 
-export const addContact = createAction('contacts/AddContact');
-export const removeContact = createAction('contacts/RemoveContact');
+const contactsSlice = createSlice({
+  name: 'contacts',
+  initialState: JSON.parse(localStorage.getItem('contacts')) || [],
+  reducers: {
+    addContact(state, action) {
+      state.push(action.payload);
+    },
+    removeContact(state, action) {
+      return state.filter(contact => contact.id !== action.payload);
+    },
+  },
+});
 
-const myReducer = createReducer(
-  JSON.parse(localStorage.getItem('contacts')) || [],
-  builder => {
-    builder
-      .addCase('contacts/AddContact', (state, action) => [
-        ...state,
-        action.payload,
-      ])
-      .addCase('contacts/RemoveContact', (state, action) =>
-        state.filter(contact => contact.id !== action.payload.id)
-      );
-  }
+export const { addContact, removeContact } = contactsSlice.actions;
+
+/* _________________________________________ Slice for filter ____________________________________________*/
+
+const filterSlice = createSlice({
+  name: 'filter',
+  initialState: '',
+  reducers: {
+    changeFilter(state, action) {
+      return action.payload;
+    },
+  },
+});
+
+export const { changeFilter } = filterSlice.actions;
+
+/* _________________________________________ Slice for value ____________________________________________*/
+const valueSlice = createSlice({
+  name: 'value',
+  initialState: 100,
+  reducers: {
+    increment(state, action) {
+      return state + action.payload;
+    },
+    decrement(state, action) {
+      return state - action.payload;
+    },
+  },
+});
+
+export const { increment, decrement } = valueSlice.actions;
+
+/* _________________________________________ PERSIST ____________________________________________*/
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['contacts'],
+};
+const persistedContactsReducer = persistReducer(
+  persistConfig,
+  contactsSlice.reducer
 );
+
+/* _________________________________________ STORE ____________________________________________*/
 
 export const store = configureStore({
   reducer: {
-    contactList: myReducer,
+    contacts: persistedContactsReducer,
+    filter: filterSlice.reducer,
+    value: valueSlice.reducer,
   },
+  middleware: getDefaultMiddleware => [...getDefaultMiddleware(), logger],
 });
+
+export const persistor = persistStore(store);

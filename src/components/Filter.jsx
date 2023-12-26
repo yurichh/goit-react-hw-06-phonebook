@@ -1,6 +1,13 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { changeFilter } from '../redux/store';
 
-const Filter = ({ handleFilter }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+
+  const handleFilter = ({ target: { value } }) => {
+    dispatch(changeFilter(value));
+  };
   return (
     <>
       <label htmlFor="filter" className="filter-label">

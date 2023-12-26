@@ -1,10 +1,32 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../redux/store';
 
-const ContactForm = ({ handleAddContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
   const [state, setState] = useState({ name: '', number: '' });
 
+  const checkNameForRepeat = contactName => {
+    return contacts.some(
+      ({ name }) => name.toLowerCase() === contactName.toLowerCase()
+    );
+  };
+
+  const handleAddContact = obj => {
+    if (checkNameForRepeat(obj.name)) {
+      Notiflix.Notify.warning(`${obj.name} is already in contacts`, {
+        position: 'center-top',
+        distance: '50px',
+        fontSize: '40px',
+        width: '600px',
+      });
+      return;
+    }
+    dispatch(addContact(obj));
+  };
   const createContactObj = e => {
     e.preventDefault();
 
