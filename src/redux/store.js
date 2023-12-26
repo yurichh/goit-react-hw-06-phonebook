@@ -1,5 +1,4 @@
 import { combineReducers, configureStore, createSlice } from '@reduxjs/toolkit';
-import { logger } from 'redux-logger';
 import {
   FLUSH,
   PAUSE,
@@ -41,6 +40,7 @@ const filterSlice = createSlice({
 });
 
 export const { changeFilter } = filterSlice.actions;
+
 /* _________________________________________ PERSIST ____________________________________________*/
 
 const persistConfig = {
@@ -54,19 +54,18 @@ const root = combineReducers({
   filter: filterSlice.reducer,
 });
 
-const persistedContactsReducer = persistReducer(persistConfig, root);
+const persistedReducers = persistReducer(persistConfig, root);
 
 /* _________________________________________ STORE ____________________________________________*/
 
 export const store = configureStore({
-  reducer: persistedContactsReducer,
+  reducer: persistedReducers,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-  logger,
 });
 
 export const persistor = persistStore(store);
